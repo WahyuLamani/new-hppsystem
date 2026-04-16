@@ -22,7 +22,7 @@ export default function Sidebar() {
             </div>
             <nav className="flex-1 px-4 space-y-1">
               {/* Dashboard Active */}
-              <Link className="flex items-center text-teal-800 dark:text-teal-100 font-bold bg-white dark:bg-slate-900 rounded-lg shadow-sm px-4 py-3 ml-2 translate-x-1 duration-200" href="/dasboard">
+              <Link className="flex items-center text-teal-800 dark:text-teal-100 font-bold bg-white dark:bg-slate-900 rounded-lg shadow-sm px-4 py-3 ml-2 translate-x-1 duration-200" href="/dashboard">
                 <LayoutDashboard className="material-symbols-outlined mr-3" />
                 <span className="font-inter uppercase text-xs tracking-[0.05em]">
                   Dashboard
