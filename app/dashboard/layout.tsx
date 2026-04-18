@@ -10,11 +10,9 @@ export default function Dashboard({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="bg-background text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
-        <Sidebar/>
-        {children}
-      </body>
-    </html>
+    <main className="bg-background text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+      <Sidebar />
+      {children}
+    </main>
   );
 }

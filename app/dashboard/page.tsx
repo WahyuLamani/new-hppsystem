@@ -2,7 +2,7 @@ import { Bell, Search, Settings } from "lucide-react";
 
 export default function Dashboard() {
   return (
-    <main className="flex-1 ml-72 relative">
+    <section className="flex-1 ml-72 relative">
       <header className="sticky top-0 w-full z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(25,28,30,0.06)] flex justify-between items-center px-8 h-20">
         <div className="flex items-center gap-6">
           <div className="relative w-64">
@@ -31,6 +31,6 @@ export default function Dashboard() {
           </div>
         </div>
       </header>
-    </main>
+    </section>
   );
 }
