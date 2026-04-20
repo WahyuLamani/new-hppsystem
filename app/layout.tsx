@@ -16,7 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body
+        className={`${inter.className} min-h-[max(884px,100dvh)] text-on-surface`}
+      >
+        <div className="canvas-container flex flex-col pb-32">{children}</div>
+      </body>
     </html>
   );
 }
