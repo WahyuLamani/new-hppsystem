@@ -1,0 +1,195 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+model Users{
+  id    Int @id @default(autoincrement())
+  name  String
+  email String @unique
+}
+model Categories{
+  id   Int @id @default(autoincrement())
+  name String @unique
+  // relation
+  products Products[]
+}
+model Products{
+  id  Int @id @default(autoincrement())
+  category_id Int 
+  name String
+  unit String
+  selling_price Float
+  // relation
+  category Categories @relation(fields: [category_id], references: [id])
+  recipes Recipes[]
+  purchase_order_items PurchaseOrderItems[]
+  production_batches ProductionBatches[]
+}
+model RawMaterials{
+  id   Int @id @default(autoincrement())
+  name String @unique
+  unit_buy String
+  unit_use String
+  conversion_factor Float
+  current_stock Float
+  average_cost Float
+  min_stock_alert Float
+  // relation
+  material_purchases MaterialPurchases[]
+  stock_adjustments StockAdjustments[]
+  recipe_items RecipeItems[]
+  purchase_order_overrides PurchaseOrderOverrides[]
+}
+model MaterialPurchases{
+  id Int @id @default(autoincrement())
+  raw_material_id Int
+  qty_bought Float
+  price_per_unit Float
+  total_cost Float
+  purchase_date DateTime
+  // relation
+  raw_material RawMaterials @relation(fields: [raw_material_id], references: [id])
+}
+model StockAdjustments{
+  id Int @id @default(autoincrement())
+  raw_material_id Int
+  qty_change Float
+  reason String
+  // relation
+  raw_material RawMaterials @relation(fields: [raw_material_id], references: [id])
+}
+model Recipes{
+  id Int @id @default(autoincrement())
+  product_id Int
+  version_name String
+  is_default Boolean @default(false)
+  // relation
+  product Products @relation(fields: [product_id], references: [id])
+  recipe_items RecipeItems[]
+  purchase_order_items PurchaseOrderItems[]
+  production_batches ProductionBatches[]
+}
+model RecipeItems {
+  id Int @id @default(autoincrement())
+  recipe_id Int
+  raw_material_id Int
+  qty_needed Float
+  unit String
+  // relation
+  recipe Recipes @relation(fields: [recipe_id], references: [id])
+  raw_material RawMaterials @relation(fields: [raw_material_id], references: [id])
+}
+model PurchaseOrder{
+  id Int @id @default(autoincrement())
+  po_number String
+  customer_name String
+  order_date DateTime
+  due_date DateTime
+  status String
+  // relation
+  purchase_order_items PurchaseOrderItems[]
+}
+model PurchaseOrderItems{
+  id Int @id @default(autoincrement())
+  po_id Int
+  product_id Int
+  recipe_id Int
+  qty Int
+  hpp_per_unit Float
+  selling_price Float
+  total_hpp Float
+  total_revenue Float
+  // relation
+  purchase_order PurchaseOrder @relation(fields: [po_id], references: [id])
+  product Products @relation(fields: [product_id], references: [id])
+  recipe Recipes @relation(fields: [recipe_id], references: [id])
+  purchase_order_overrides PurchaseOrderOverrides[]
+  overheads Overheads[]
+  transactions Transactions[]
+}
+model PurchaseOrderOverrides{
+  id Int @id @default(autoincrement())
+  po_item_id Int
+  raw_material_id Int
+  qty_used Float
+  cost_at_time Float
+  // relation
+  purchase_order_item PurchaseOrderItems @relation(fields: [po_item_id], references: [id])
+  raw_material RawMaterials @relation(fields: [raw_material_id], references: [id])
+}
+model Overheads {
+  id Int @id @default(autoincrement())
+  po_item_id Int
+  label String
+  amount Float
+  category String
+  // relation
+  purchase_order_item PurchaseOrderItems @relation(fields: [po_item_id], references: [id])
+}
+model ProductionBatches{
+  id Int @id @default(autoincrement())
+  product_id Int
+  recipe_id Int
+  qty_produced Int
+  hpp_per_unit Float
+  total_hpp Float
+  qty_remaining Int
+  production_date DateTime
+  // relation
+  product Products @relation(fields: [product_id], references: [id])
+  recipe Recipes @relation(fields: [recipe_id], references: [id])
+  batch_overheads BatchOverheads[]
+  transactions Transactions[]
+}
+model BatchOverheads {
+  id Int @id @default(autoincrement())
+  batch_id Int
+  label String
+  amount Float
+  category String
+  // relation
+  production_batch ProductionBatches @relation(fields: [batch_id], references: [id])
+}
+model Transactions{
+  id Int @id @default(autoincrement())
+  po_item_id Int
+  batch_id Int
+  type String
+  status String
+  qty_sold Int
+  selling_price Float
+  total_revenue Float
+  total_hpp Float
+  gross_profit Float
+  margin_pct Float
+  transaction_date DateTime
+  // relation
+  purchase_order_item PurchaseOrderItems @relation(fields: [po_item_id], references: [id])
+  production_batch ProductionBatches @relation(fields: [batch_id], references: [id])
+  sales_returns SalesReturns[]
+}
+model SalesReturns{
+  id Int @id @default(autoincrement())
+  transaction_id Int
+  qty_returned Int
+  reason String
+  stock_action String
+  refund_amount Float
+  hpp_reversed Float
+  return_date DateTime
+  notes String
+  // relation
+  transaction Transactions @relation(fields: [transaction_id], references: [id])
+}
