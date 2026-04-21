@@ -1,6 +1,5 @@
 import ProductCards from "@/components/main/ProductCards";
 import ProductHighlight from "@/components/main/ProductHighlight";
-import BottomMenu from "@/components/utils/BottomMenu";
 import MainHeader from "@/components/utils/MainHeader";
 import SearchProduct from "@/components/utils/SearchProduct";
 import SidebarMenu from "@/components/utils/SidebarMenu";
@@ -11,12 +10,9 @@ export default function ProductPage() {
   return (
     <>
       <MainHeader>
-        <div className="flex items-center gap-4">
-          <SidebarMenu />
-          <h1 className="text-[#442a22] dark:text-[#ece0dc] text-2xl font-bold tracking-tight">
-            Master Produk
-          </h1>
-        </div>
+        <h1 className="text-[#442a22] dark:text-[#ece0dc] text-2xl font-bold tracking-tight">
+          Master Produk
+        </h1>
       </MainHeader>
       <div className="px-6 mt-6">
         <SearchProduct />
@@ -39,8 +35,6 @@ export default function ProductPage() {
           <Plus />
         </span>
       </Link>
-
-      <BottomMenu />
     </>
   );
 }
