@@ -18,10 +18,14 @@ model Users{
   id    Int @id @default(autoincrement())
   name  String
   email String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 model Categories{
   id   Int @id @default(autoincrement())
   name String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   // relation
   products Products[]
 }
@@ -32,6 +36,8 @@ model Products{
   unit String
   selling_price Float
   image_url String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   // relation
   category Categories @relation(fields: [category_id], references: [id])
   recipes Recipes[]
@@ -47,6 +53,8 @@ model RawMaterials{
   current_stock Float
   average_cost Float
   min_stock_alert Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   // relation
   material_purchases MaterialPurchases[]
   stock_adjustments StockAdjustments[]
@@ -60,6 +68,8 @@ model MaterialPurchases{
   price_per_unit Float
   total_cost Float
   purchase_date DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   // relation
   raw_material RawMaterials @relation(fields: [raw_material_id], references: [id])
 }
@@ -68,6 +78,8 @@ model StockAdjustments{
   raw_material_id Int
   qty_change Float
   reason String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   // relation
   raw_material RawMaterials @relation(fields: [raw_material_id], references: [id])
 }
@@ -76,6 +88,8 @@ model Recipes{
   product_id Int
   version_name String
   is_default Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   // relation
   product Products @relation(fields: [product_id], references: [id])
   recipe_items RecipeItems[]
@@ -88,6 +102,8 @@ model RecipeItems {
   raw_material_id Int
   qty_needed Float
   unit String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   // relation
   recipe Recipes @relation(fields: [recipe_id], references: [id])
   raw_material RawMaterials @relation(fields: [raw_material_id], references: [id])
@@ -99,6 +115,8 @@ model PurchaseOrder{
   order_date DateTime
   due_date DateTime
   status String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   // relation
   purchase_order_items PurchaseOrderItems[]
 }
@@ -112,6 +130,8 @@ model PurchaseOrderItems{
   selling_price Float
   total_hpp Float
   total_revenue Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   // relation
   purchase_order PurchaseOrder @relation(fields: [po_id], references: [id])
   product Products @relation(fields: [product_id], references: [id])
@@ -126,6 +146,8 @@ model PurchaseOrderOverrides{
   raw_material_id Int
   qty_used Float
   cost_at_time Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   // relation
   purchase_order_item PurchaseOrderItems @relation(fields: [po_item_id], references: [id])
   raw_material RawMaterials @relation(fields: [raw_material_id], references: [id])
@@ -136,6 +158,8 @@ model Overheads {
   label String
   amount Float
   category String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   // relation
   purchase_order_item PurchaseOrderItems @relation(fields: [po_item_id], references: [id])
 }
@@ -148,6 +172,8 @@ model ProductionBatches{
   total_hpp Float
   qty_remaining Int
   production_date DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   // relation
   product Products @relation(fields: [product_id], references: [id])
   recipe Recipes @relation(fields: [recipe_id], references: [id])
@@ -160,6 +186,8 @@ model BatchOverheads {
   label String
   amount Float
   category String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   // relation
   production_batch ProductionBatches @relation(fields: [batch_id], references: [id])
 }
@@ -176,6 +204,8 @@ model Transactions{
   gross_profit Float
   margin_pct Float
   transaction_date DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   // relation
   purchase_order_item PurchaseOrderItems @relation(fields: [po_item_id], references: [id])
   production_batch ProductionBatches @relation(fields: [batch_id], references: [id])
@@ -191,6 +221,8 @@ model SalesReturns{
   hpp_reversed Float
   return_date DateTime
   notes String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   // relation
   transaction Transactions @relation(fields: [transaction_id], references: [id])
 }
