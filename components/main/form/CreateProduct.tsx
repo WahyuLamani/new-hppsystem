@@ -1,5 +1,6 @@
 "use client";
 import { createProduct } from "@/action/product";
+import { resizeImage } from "@/components/customHooks/UseImageResize";
 import {
   ProductFormData,
   ProductFormDataInput,
@@ -21,17 +22,28 @@ export default function CreateProduct({
 }) {
   const router = useRouter();
   const [preview, setPreview] = useState<string | null>(null);
+  const [imgResize, setImgResize] = useState<File | null>(null);
   const inputImageRef = useRef<HTMLInputElement | null>(null);
 
-  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    setPreview(URL.createObjectURL(file));
+    const { file: rf, base64 } = await resizeImage(file, {
+      width: 800,
+      quality: 0.85,
+      outputFormat: "image/webp",
+      returnAs: "file",
+    });
+    if (rf) {
+      setImgResize(rf);
+      setPreview(URL.createObjectURL(rf));
+    }
   }
 
   function handleRemoveImage() {
     setPreview(null);
     //reset input
+    setImgResize(null);
     if (inputImageRef.current) inputImageRef.current.value = "";
   }
   const {
@@ -51,9 +63,7 @@ export default function CreateProduct({
     formData.append("unit", data.unit);
     formData.append("selling_price", String(data.selling_price));
 
-    const imageInput = inputImageRef.current;
-    const file = imageInput?.files?.[0];
-    if (file) formData.append("image", file);
+    if (imgResize) formData.append("image", imgResize);
     const result = await createProduct(formData);
     if (result.success) router.push("/main/produk");
     if (!result.success) console.log(result.message);
