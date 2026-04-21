@@ -2,11 +2,17 @@ import ProductCards from "@/components/main/ProductCards";
 import ProductHighlight from "@/components/main/ProductHighlight";
 import MainHeader from "@/components/utils/MainHeader";
 import SearchProduct from "@/components/utils/SearchProduct";
+import { prisma } from "@/lib/prisma";
+import { Categories, Products } from "@prisma/client";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 
-
-export default function ProductPage() {
+export default async function ProductPage() {
+  const products: (Products & { category: Categories })[] =
+    await prisma.products.findMany({
+      include: { category: true },
+      orderBy: { id: "desc" },
+    });
   return (
     <>
       <MainHeader>
@@ -25,7 +31,7 @@ export default function ProductPage() {
         </span>
       </div>
       <div className="px-6 space-y-6">
-        <ProductCards />
+        <ProductCards products={products} />
       </div>
       <Link
         href="/main/produk/add"
