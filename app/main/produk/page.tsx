@@ -2,9 +2,9 @@ import ProductCards from "@/components/main/ProductCards";
 import ProductHighlight from "@/components/main/ProductHighlight";
 import MainHeader from "@/components/utils/MainHeader";
 import SearchProduct from "@/components/utils/SearchProduct";
-import SidebarMenu from "@/components/utils/SidebarMenu";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+
 
 export default function ProductPage() {
   return (
@@ -28,7 +28,7 @@ export default function ProductPage() {
         <ProductCards />
       </div>
       <Link
-        href="/product/add"
+        href="/main/produk/add"
         className="fixed bottom-28 right-1/2 translate-x-[180px] w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:scale-110 active:scale-90 transition-transform z-[60]"
       >
         <span className="material-symbols-outlined text-3xl">

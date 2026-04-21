@@ -29,7 +29,7 @@ export default function BottomMenu() {
   return (
     <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-[400px] rounded-full bg-[#e9e2d0]/80 backdrop-blur-xxl dark:bg-[#4c4542]/80 shadow-[0px_12px_32px_rgba(30,28,16,0.06)] flex justify-around items-center p-2">
       {NAV_ITEMS.map(({ icon: Icon, label, href }) => {
-        const isActive = pathname === href;
+        const isActive = pathname === href || pathname.startsWith(href + "/");
 
         return (
           <Link
