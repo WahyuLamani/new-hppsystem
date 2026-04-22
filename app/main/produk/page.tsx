@@ -1,15 +1,25 @@
 import ProductCards from "@/components/main/ProductCards";
 import ProductHighlight from "@/components/main/ProductHighlight";
+import AddLink from "@/components/utils/AddLink";
 import MainHeader from "@/components/utils/MainHeader";
-import SearchProduct from "@/components/utils/SearchProduct";
+import SearchInput from "@/components/utils/Search";
 import { prisma } from "@/lib/prisma";
 import { Categories, Products } from "@prisma/client";
-import { Plus } from "lucide-react";
-import Link from "next/link";
 
-export default async function ProductPage() {
+export default async function ProductPage({ searchParams }: PageProps) {
+  const query = searchParams.query ?? "";
+
   const products: (Products & { category: Categories })[] =
     await prisma.products.findMany({
+      where: query
+        ? {
+            // filter hanya kalau query tidak kosong
+            OR: [
+              { name: { contains: query, mode: "insensitive" } },
+              { category: { name: { contains: query, mode: "insensitive" } } },
+            ],
+          }
+        : undefined, // kalau kosong, tampil semua (default)
       include: { category: true },
       orderBy: { id: "desc" },
     });
@@ -21,7 +31,7 @@ export default async function ProductPage() {
         </h1>
       </MainHeader>
       <div className="px-6 mt-6">
-        <SearchProduct />
+        <SearchInput placeholder="Cari Produk ...." />
       </div>
       <ProductHighlight />
       <div className="px-6 mt-10 mb-4 flex justify-between items-end">
@@ -33,14 +43,7 @@ export default async function ProductPage() {
       <div className="px-6 space-y-6">
         <ProductCards products={products} />
       </div>
-      <Link
-        href="/main/produk/add"
-        className="fixed bottom-28 right-1/2 translate-x-[180px] w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:scale-110 active:scale-90 transition-transform z-[60]"
-      >
-        <span className="material-symbols-outlined text-3xl">
-          <Plus />
-        </span>
-      </Link>
+      <AddLink href="/main/produk/add" />
     </>
   );
 }
