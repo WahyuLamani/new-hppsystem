@@ -35,7 +35,7 @@ export default function CreateRawMaterial() {
     <>
       <main className="flex-1 px-6 pt-4 pb-32 overflow-y-auto space-y-8">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <section className="space-y-4">
+          <section className="py-3 space-y-3">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold text-primary tracking-tight">
                 Informasi Dasar
@@ -58,25 +58,9 @@ export default function CreateRawMaterial() {
                   </p>
                 )}
               </div>
-              <div className="group">
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-outline mb-1.5 ml-1">
-                  Harga Awal Pembelian
-                </label>
-                <input
-                  {...register("initial_price")}
-                  className="w-full bg-surface-container-low border-none focus:outline-none rounded-DEFAULT px-4 py-4 text-on-surface placeholder:text-outline-variant focus:ring-2 focus:ring-primary/20 transition-all"
-                  placeholder="Contoh : 30000"
-                  type="number"
-                />
-                {errors.initial_price && (
-                  <p className="text-xs text-error px-1">
-                    {errors.initial_price.message}
-                  </p>
-                )}
-              </div>
             </div>
           </section>
-          <section className="space-y-4">
+          <section className="py-3 space-y-3">
             <h2 className="text-lg font-bold text-primary tracking-tight">
               Konversi Satuan
             </h2>
@@ -157,7 +141,7 @@ export default function CreateRawMaterial() {
               </div>
             </div>
           </section>
-          <section className="space-y-4">
+          <section className="py-3 space-y-3">
             <h2 className="text-lg font-bold text-primary tracking-tight">
               Inventori
             </h2>
@@ -204,6 +188,32 @@ export default function CreateRawMaterial() {
                   </p>
                 )}
               </div>
+            </div>
+            <div className="group">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-outline mb-1.5 ml-1">
+                Harga Awal Pembelian
+              </label>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">
+                  Rp
+                </span>
+
+                <input
+                  {...register("initial_price")}
+                  className={clsx(
+                    "w-full bg-surface-container-low border-none focus:outline-none rounded-DEFAULT pl-11 pr-4 py-4 text-on-surface placeholder:text-outline-variant focus:ring-2 focus:ring-primary/20 transition-all",
+                    errors.initial_price && "ring-2 ring-error"
+                  )}
+                  placeholder="30000"
+                  type="number"
+                />
+              </div>
+
+              {errors.initial_price && (
+                <p className="text-xs text-error px-1">
+                  {errors.initial_price.message}
+                </p>
+              )}
             </div>
             <p className="text-[11px] text-on-surface-variant italic px-1 flex items-center gap-2">
               <span className="material-symbols-outlined text-sm">
