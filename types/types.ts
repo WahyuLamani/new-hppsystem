@@ -1,13 +1,13 @@
-export type CreateUserInput = {
+type CreateUserInput = {
   name: string;
   email: string;
 };
 
-export type CreateCategoryInput = {
+type CreateCategoryInput = {
   name: string;
 };
 
-export type CreateProductInput = {
+type CreateProductInput = {
   category_id: number;
   name: string;
   unit: string;
@@ -15,7 +15,7 @@ export type CreateProductInput = {
   image_url?: string;
 };
 
-export type CreateRawMaterialInput = {
+type CreateRawMaterialInput = {
   name: string;
   unit_buy: string;
   unit_use: string;
@@ -25,7 +25,7 @@ export type CreateRawMaterialInput = {
   min_stock_alert: number;
 };
 
-export type CreateMaterialPurchaseInput = {
+type CreateMaterialPurchaseInput = {
   raw_material_id: number;
   qty_bought: number;
   price_per_unit: number;
@@ -33,26 +33,26 @@ export type CreateMaterialPurchaseInput = {
   purchase_date: Date;
 };
 
-export type CreateStockAdjustmentInput = {
+type CreateStockAdjustmentInput = {
   raw_material_id: number;
   qty_change: number;
   reason: string;
 };
 
-export type CreateRecipeInput = {
+type CreateRecipeInput = {
   product_id: number;
   version_name: string;
   is_default?: boolean;
 };
 
-export type CreateRecipeItemInput = {
+type CreateRecipeItemInput = {
   recipe_id: number;
   raw_material_id: number;
   qty_needed: number;
   unit: string;
 };
 
-export type CreatePurchaseOrderInput = {
+type CreatePurchaseOrderInput = {
   po_number: string;
   customer_name: string;
   order_date: Date;
@@ -60,7 +60,7 @@ export type CreatePurchaseOrderInput = {
   status: string;
 };
 
-export type CreatePurchaseOrderItemInput = {
+type CreatePurchaseOrderItemInput = {
   po_id: number;
   product_id: number;
   recipe_id: number;
@@ -71,21 +71,21 @@ export type CreatePurchaseOrderItemInput = {
   total_revenue: number;
 };
 
-export type CreatePurchaseOrderOverrideInput = {
+type CreatePurchaseOrderOverrideInput = {
   po_item_id: number;
   raw_material_id: number;
   qty_used: number;
   cost_at_time: number;
 };
 
-export type CreateOverheadInput = {
+type CreateOverheadInput = {
   po_item_id: number;
   label: string;
   amount: number;
   category: string;
 };
 
-export type CreateProductionBatchInput = {
+type CreateProductionBatchInput = {
   product_id: number;
   recipe_id: number;
   qty_produced: number;
@@ -95,14 +95,14 @@ export type CreateProductionBatchInput = {
   production_date: Date;
 };
 
-export type CreateBatchOverheadInput = {
+type CreateBatchOverheadInput = {
   batch_id: number;
   label: string;
   amount: number;
   category: string;
 };
 
-export type CreateTransactionInput = {
+type CreateTransactionInput = {
   po_item_id: number;
   batch_id: number;
   type: string;
@@ -116,7 +116,7 @@ export type CreateTransactionInput = {
   transaction_date: Date;
 };
 
-export type CreateSalesReturnInput = {
+type CreateSalesReturnInput = {
   transaction_id: number;
   qty_returned: number;
   reason: string;
