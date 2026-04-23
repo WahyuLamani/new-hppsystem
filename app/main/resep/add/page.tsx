@@ -1,7 +1,13 @@
 import CreateRecipe from "@/components/main/form/CreateRecipe";
 import SubHeader from "@/components/utils/SubHeader";
+import { prisma } from "@/lib/prisma";
+import { Categories, Products } from "@prisma/client";
 
-export default function AddRecipe() {
+export default async function AddRecipe() {
+  const products: (Products & { category: Categories })[] =
+    await prisma.products.findMany({
+      include: { category: true },
+    });
   return (
     <>
       <SubHeader>
@@ -9,7 +15,7 @@ export default function AddRecipe() {
           Buat Resep Baru
         </h1>
       </SubHeader>
-      <CreateRecipe />
+      <CreateRecipe products={products} />
     </>
   );
 }

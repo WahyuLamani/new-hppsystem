@@ -1,6 +1,7 @@
 "use client";
 import IngredientSearch from "@/components/utils/IngredientSearch";
 import SelectProductParent from "@/components/utils/SelectProductParent";
+import { Categories, Products } from "@prisma/client";
 import { CircleCheck, ReceiptText, WandSparkles } from "lucide-react";
 import { useState } from "react";
 const INGREDIENTS = [
@@ -8,15 +9,22 @@ const INGREDIENTS = [
   { id: 2, name: "Bread Flour", unit: "grams", pricePerKg: 15000 },
   // ...
 ];
-export default function CreateRecipe() {
+export default function CreateRecipe({
+  products,
+}: {
+  products: (Products & { category: Categories })[];
+}) {
   const handleIngredientsChange = (selected: any[]) => {
     console.log("Selected ingredients:", selected);
     // simpan ke state parent, kirim ke API, dst.
   };
-  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<
+    (Products & { category: Categories }) | null
+  >(null);
   return (
     <>
       <SelectProductParent
+        products={products}
         value={selectedProduct}
         onChange={setSelectedProduct}
       />
