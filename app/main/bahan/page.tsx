@@ -4,8 +4,16 @@ import MainHeader from "@/components/utils/MainHeader";
 import SearchInput from "@/components/utils/Search";
 import { prisma } from "@/lib/prisma";
 import { RawMaterials } from "@prisma/client";
-export default async function BahanPage() {
-  const rawMaterials: RawMaterials[] = await prisma.rawMaterials.findMany();
+export default async function BahanPage({ searchParams }: PageProps) {
+  const query = searchParams.query ?? "";
+  const rawMaterials: RawMaterials[] = await prisma.rawMaterials.findMany({
+    where: query
+      ? {
+          // filter hanya kalau query tidak kosong
+          OR: [{ name: { contains: query, mode: "insensitive" } }],
+        }
+      : undefined,
+  });
   return (
     <>
       <MainHeader>
