@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Search, Plus, Trash2 } from "lucide-react";
+import { Search, Plus, Trash2, Fish } from "lucide-react";
 
 // --- Types ---
 export interface Ingredient {
@@ -126,8 +126,9 @@ export default function IngredientSearch({
             <div className="flex justify-between items-start">
               <div className="flex gap-3">
                 <div className="bg-primary text-surface p-2 rounded-lg h-fit">
-                  {/* Ganti dengan icon sesuai kategori jika ada */}
-                  <span className="text-sm font-bold">🧈</span>
+                  <span className="text-sm font-bold">
+                    <Fish />
+                  </span>
                 </div>
                 <div>
                   <h4 className="font-bold text-on-surface">
