@@ -5,3 +5,9 @@ export function formatRupiah(value: number | string) {
       minimumFractionDigits: 0,
     }).format(Number(value))
   }
+
+  export function calculateSubtotal(items: RawMaterialItemSelected[]): number {
+    return items.reduce((total, item) => {
+      return total + item.raw_material_cost_use;
+    }, 0);
+  }

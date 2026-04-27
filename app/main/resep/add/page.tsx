@@ -1,13 +1,15 @@
 import CreateRecipe from "@/components/main/form/CreateRecipe";
 import SubHeader from "@/components/utils/SubHeader";
 import { prisma } from "@/lib/prisma";
-import { Categories, Products } from "@prisma/client";
+import { Categories, Products, RawMaterials, Recipes } from "@prisma/client";
 
 export default async function AddRecipe() {
   const products: (Products & { category: Categories })[] =
     await prisma.products.findMany({
       include: { category: true },
     });
+
+  const rawMaterials: RawMaterials[] = await prisma.rawMaterials.findMany();
   return (
     <>
       <SubHeader>
@@ -15,7 +17,10 @@ export default async function AddRecipe() {
           Buat Resep Baru
         </h1>
       </SubHeader>
-      <CreateRecipe products={products} />
+      <CreateRecipe
+        products={products}
+        rawMaterials={rawMaterials}
+      />
     </>
   );
 }

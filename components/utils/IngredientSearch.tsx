@@ -1,70 +1,64 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Search, Plus, Trash2, Fish } from "lucide-react";
-
-// --- Types ---
-export interface Ingredient {
-  id: number;
-  name: string;
-  unit: string;
-  pricePerKg: number;
-}
-
-export interface SelectedIngredient {
-  ingredient: Ingredient;
-  qty: number;
-}
-
-interface IngredientSearchProps {
-  ingredients: Ingredient[]; // semua data dari parent
-  onChange: (selected: SelectedIngredient[]) => void; // callback ke parent
-}
-
-// --- Utils ---
-function calcSubtotal(ingredient: Ingredient, qty: number) {
-  return Math.round((ingredient.pricePerKg / 1000) * qty);
-}
-
-function formatRupiah(n: number) {
-  return "Rp " + n.toLocaleString("id-ID");
-}
+import { RawMaterials } from "@prisma/client";
+import {
+  formatRupiah,
+} from "@/lib/helper";
 
 // --- Component ---
 export default function IngredientSearch({
-  ingredients,
+  rawMaterials,
+  selectedRawMaterials,
   onChange,
-}: IngredientSearchProps) {
+}: {
+  rawMaterials: RawMaterials[];
+  selectedRawMaterials: RawMaterialItemSelected[];
+  onChange: React.Dispatch<React.SetStateAction<RawMaterialItemSelected[]>>;
+}) {
   const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState<SelectedIngredient[]>([]);
 
-  const filtered = query.trim()
-    ? ingredients.filter((i) =>
+  const rawMaterialFiltered = query.trim()
+    ? rawMaterials.filter((i) =>
         i.name.toLowerCase().includes(query.toLowerCase())
       )
     : [];
 
   const isSelected = (id: number) =>
-    selected.some((s) => s.ingredient.id === id);
+    selectedRawMaterials.some((s) => s.raw_material_id === id);
 
-  const handleAdd = (ingredient: Ingredient) => {
-    const next = [...selected, { ingredient, qty: 100 }];
-    setSelected(next);
+  const handleAdd = (ingredient: RawMaterials) => {
+    const newData: RawMaterialItemSelected = {
+      raw_material_id: ingredient.id,
+      qty_needed: 0,
+      raw_material_name: ingredient.name,
+      raw_material_cost_ave: ingredient.average_cost,
+      raw_material_cost_use: 0,
+      unit: ingredient.unit_use,
+    };
+    const next = [...selectedRawMaterials, newData];
     onChange(next);
     setQuery("");
   };
 
   const handleRemove = (id: number) => {
-    const next = selected.filter((s) => s.ingredient.id !== id);
-    setSelected(next);
+    const next = selectedRawMaterials.filter((s) => s.raw_material_id !== id);
     onChange(next);
   };
 
   const handleQtyChange = (id: number, val: string) => {
-    const next = selected.map((s) =>
-      s.ingredient.id === id ? { ...s, qty: Math.max(0, Number(val)) } : s
+    const value = Math.max(0, Number(val) || 0);
+    onChange((prev) =>
+      prev.map((s) =>
+        s.raw_material_id === id
+          ? {
+              ...s,
+              qty_needed: value,
+              raw_material_cost_use: value * s.raw_material_cost_ave,
+            }
+          : s
+      )
     );
-    setSelected(next);
-    onChange(next);
   };
 
   return (
@@ -82,9 +76,9 @@ export default function IngredientSearch({
       </div>
 
       {/* Dropdown Hasil Search */}
-      {filtered.length > 0 && (
+      {rawMaterialFiltered.length > 0 && (
         <div className="bg-surface-container-high rounded-xl overflow-hidden border border-outline-variant">
-          {filtered.map((ing) => (
+          {rawMaterialFiltered.map((ing) => (
             <div
               key={ing.id}
               className="flex items-center justify-between px-4 py-3 hover:bg-surface-container-highest transition-colors border-b border-outline-variant last:border-b-0"
@@ -94,7 +88,7 @@ export default function IngredientSearch({
                   {ing.name}
                 </p>
                 <p className="text-xs text-on-surface-variant">
-                  {formatRupiah(ing.pricePerKg)} / kg
+                  {formatRupiah(ing.average_cost)} / {ing.unit_use}
                 </p>
               </div>
 
@@ -118,9 +112,9 @@ export default function IngredientSearch({
 
       {/* Selected Ingredients List */}
       <div className="space-y-4">
-        {selected.map(({ ingredient, qty }) => (
+        {selectedRawMaterials.map((ingredient) => (
           <div
-            key={ingredient.id}
+            key={ingredient.raw_material_id}
             className="bg-surface-container-highest/50 p-5 rounded-lg flex flex-col gap-4"
           >
             <div className="flex justify-between items-start">
@@ -132,15 +126,16 @@ export default function IngredientSearch({
                 </div>
                 <div>
                   <h4 className="font-bold text-on-surface">
-                    {ingredient.name}
+                    {ingredient.raw_material_name}
                   </h4>
                   <p className="text-xs text-on-surface-variant">
-                    Avg: {formatRupiah(ingredient.pricePerKg)} / kg
+                    Avg: {formatRupiah(ingredient.raw_material_cost_ave)} /{" "}
+                    {ingredient.unit}
                   </p>
                 </div>
               </div>
               <button
-                onClick={() => handleRemove(ingredient.id)}
+                onClick={() => handleRemove(ingredient.raw_material_id)}
                 className="text-error opacity-40 hover:opacity-100 transition-opacity"
               >
                 <Trash2 className="w-5 h-5" />
@@ -152,9 +147,9 @@ export default function IngredientSearch({
                 <input
                   className="w-16 bg-transparent border-none p-0 text-lg font-bold text-primary focus:ring-0"
                   type="number"
-                  value={qty}
+                  value={ingredient.qty_needed}
                   onChange={(e) =>
-                    handleQtyChange(ingredient.id, e.target.value)
+                    handleQtyChange(ingredient.raw_material_id, e.target.value)
                   }
                 />
                 <span className="text-xs font-bold uppercase text-outline">
@@ -166,7 +161,7 @@ export default function IngredientSearch({
                   Subtotal
                 </p>
                 <p className="font-bold text-primary">
-                  {formatRupiah(calcSubtotal(ingredient, qty))}
+                  {formatRupiah(ingredient.raw_material_cost_use)}
                 </p>
               </div>
             </div>

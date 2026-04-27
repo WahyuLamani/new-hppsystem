@@ -52,6 +52,15 @@ type CreateRecipeItemInput = {
   unit: string;
 };
 
+type RawMaterialItemSelected = {
+  raw_material_id: number;
+  raw_material_name: string;
+  raw_material_cost_ave: number;
+  raw_material_cost_use: number;
+  qty_needed: number;
+  unit: string;
+};
+
 type CreatePurchaseOrderInput = {
   po_number: string;
   customer_name: string;
