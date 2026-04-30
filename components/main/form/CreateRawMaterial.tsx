@@ -29,7 +29,17 @@ export default function CreateRawMaterial() {
   const onSubmit = async (data: RawMaterialFormData) => {
     const result = await createRawMaterial(data);
     console.log(result);
-    if (result.success) router.push("/main/bahan");
+    if (result.success) {
+      sessionStorage.setItem(
+        "toast",
+        JSON.stringify({
+          variant: "success",
+          title: "Bahan berhasil ditambahkan",
+          description: "Data bahan baku tersimpan.",
+        })
+      );
+      router.push("/main/bahan");
+    }
   };
   return (
     <>

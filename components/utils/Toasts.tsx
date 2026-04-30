@@ -1,15 +1,6 @@
-"use client"
+"use client";
 import { CheckCircle2, Info, AlertTriangle, XCircle, X } from "lucide-react";
-
-type ToastVariant = "success" | "info" | "warning" | "error";
-
-interface ToastItemProps {
-  variant: ToastVariant;
-  title: string;
-  description?: string;
-  onRetry?: () => void;
-  onClose?: () => void;
-}
+import { useToast, Toast, ToastVariant } from "@/components/utils/ToastContext";
 
 const config: Record<ToastVariant, {
   icon: React.ReactNode;
@@ -53,8 +44,8 @@ const config: Record<ToastVariant, {
   },
 };
 
-function ToastItem({ variant, title, description, onRetry, onClose }: ToastItemProps) {
-  const c = config[variant];
+function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: () => void }) {
+  const c = config[toast.variant];
   return (
     <div
       className={`
@@ -62,24 +53,25 @@ function ToastItem({ variant, title, description, onRetry, onClose }: ToastItemP
         border-l-[3px] border
         ${c.barColor} ${c.bg} ${c.border}
         pointer-events-auto
+        animate-in slide-in-from-top-2 fade-in duration-300
       `}
     >
       <div className="shrink-0">{c.icon}</div>
 
       <div className="flex-1 min-w-0">
         <p className={`text-xs font-semibold leading-tight ${c.titleColor}`}>
-          {title}
+          {toast.title}
         </p>
-        {description && (
+        {toast.description && (
           <p className="text-[10px] text-on-surface-variant leading-tight mt-0.5">
-            {description}
+            {toast.description}
           </p>
         )}
       </div>
 
-      {onRetry ? (
+      {toast.onRetry ? (
         <button
-          onClick={onRetry}
+          onClick={toast.onRetry}
           className={`
             text-[10px] font-semibold px-2.5 py-1 rounded-full border shrink-0
             ${c.titleColor} ${c.iconBorder}
@@ -90,7 +82,7 @@ function ToastItem({ variant, title, description, onRetry, onClose }: ToastItemP
         </button>
       ) : (
         <button
-          onClick={onClose}
+          onClick={onDismiss}
           className="text-on-surface-variant/40 hover:text-on-surface-variant transition-colors shrink-0"
         >
           <X className="w-3 h-3" />
@@ -101,32 +93,17 @@ function ToastItem({ variant, title, description, onRetry, onClose }: ToastItemP
 }
 
 export default function Toasts() {
+  const { toasts, dismiss } = useToast();
+
   return (
     <div className="absolute inset-0 pointer-events-none z-50 flex flex-col px-6 pt-24 gap-2">
-      <ToastItem
-        variant="success"
-        title="Resep berhasil disimpan"
-        description="Manual COGS diperbarui otomatis."
-        onClose={() => {}}
-      />
-      <ToastItem
-        variant="info"
-        title="Stok mentega menipis"
-        description="Sisa 2.5 kg di gudang utama."
-        onClose={() => {}}
-      />
-      <ToastItem
-        variant="warning"
-        title="Gagal terhubung ke database"
-        description="Periksa koneksi internet Anda."
-        onRetry={() => {}}
-      />
-      <ToastItem
-        variant="error"
-        title="Aksi tidak dapat diproses"
-        description="Terjadi kesalahan pada server."
-        onClose={() => {}}
-      />
+      {toasts.map((toast) => (
+        <ToastItem
+          key={toast.id}
+          toast={toast}
+          onDismiss={() => dismiss(toast.id)}
+        />
+      ))}
     </div>
   );
 }
