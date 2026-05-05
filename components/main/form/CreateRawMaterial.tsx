@@ -13,6 +13,7 @@ import { Info, RefreshCcw, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export default function CreateRawMaterial() {
   const router = useRouter();
@@ -28,17 +29,19 @@ export default function CreateRawMaterial() {
 
   const onSubmit = async (data: RawMaterialFormData) => {
     const result = await createRawMaterial(data);
-    console.log(result);
     if (result.success) {
-      sessionStorage.setItem(
-        "toast",
-        JSON.stringify({
-          variant: "success",
-          title: "Bahan berhasil ditambahkan",
-          description: "Data bahan baku tersimpan.",
-        })
-      );
+      toast.success("Bahan berhasil ditambahkan", {
+        description: "Data bahan baku tersimpan.",
+      });
       router.push("/main/bahan");
+    } else {
+      toast.error("Gagal menyimpan bahan", {
+        description: result.message ?? "Terjadi kesalahan, coba lagi.",
+        action: {
+          label: "Retry",
+          onClick: () => onSubmit(data),
+        },
+      });
     }
   };
   return (
@@ -201,7 +204,7 @@ export default function CreateRawMaterial() {
             </div>
             <div className="group">
               <label className="block text-[11px] font-bold uppercase tracking-wider text-outline mb-1.5 ml-1">
-                Harga Awal Pembelian
+                {`Harga Awal Pembelian (total pembelian stok (${unitBuy}))`}
               </label>
               <div className="relative">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">
