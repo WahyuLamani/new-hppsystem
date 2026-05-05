@@ -16,7 +16,10 @@ export async function createProduct(formData: FormData) {
       .from("product_photo")
       .upload(fileName, file, { contentType: file.type, upsert: false });
     if (error)
-      return { success: false, message: { image_url: [error.message] } };
+      return {
+        success: false,
+        message: JSON.stringify({ image_url: [error.message] }),
+      };
     const { data: publicUrl } = supabase.storage
       .from("product_photo")
       .getPublicUrl(fileName);
@@ -31,7 +34,10 @@ export async function createProduct(formData: FormData) {
   };
   const parsed = ProductSchema.safeParse(raw);
   if (!parsed.success)
-    return { success: false, errors: parsed.error.flatten().fieldErrors };
+    return {
+      success: false,
+      errors: JSON.stringify(parsed.error.flatten().fieldErrors),
+    };
 
   await prisma.products.create({ data: parsed.data });
   return { success: true, message: "Produk berhasil ditambahkan" };

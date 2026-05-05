@@ -14,7 +14,7 @@ export const recipeIsDefault = async (id: number): Promise<Recipes | null> =>
 export async function createRecipe(data: unknown) {
   const parsed = rawDataRecipeSchema.safeParse(data);
   if (!parsed.success) {
-    return { success: false, errors: parsed.error.flatten().fieldErrors };
+    return { success: false, errors: JSON.stringify(parsed.error.flatten().fieldErrors) };
   }
   const payload = await buildRecipePayload(parsed.data);
   await prisma.$transaction(async (tx) => {

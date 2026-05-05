@@ -14,6 +14,7 @@ import { CameraIcon, ChevronDown, Save, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export default function CreateProduct({
   categories,
@@ -65,8 +66,17 @@ export default function CreateProduct({
 
     if (imgResize) formData.append("image", imgResize);
     const result = await createProduct(formData);
-    if (result.success) router.push("/main/produk");
-    if (!result.success) console.log(result.message);
+    if (result.success) {
+      toast.success(result.message);
+      router.push("/main/produk");
+    } else {
+      toast.error(result.errors, {
+        action: {
+          label: "Retry",
+          onClick: () => onSubmit(data),
+        },
+      });
+    }
   }
   return (
     <>

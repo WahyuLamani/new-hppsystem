@@ -5,7 +5,10 @@ import { RawMaterialSchema } from "@/lib/validation/rawMaterial";
 export async function createRawMaterial(data: unknown) {
   const parsed = RawMaterialSchema.safeParse(data);
   if (!parsed.success) {
-    return { success: false, errors: parsed.error.flatten().fieldErrors };
+    return {
+      success: false,
+      errors: JSON.stringify(parsed.error.flatten().fieldErrors),
+    };
   }
 
   const payload: CreateRawMaterialInput = {

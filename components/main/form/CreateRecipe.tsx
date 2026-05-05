@@ -10,6 +10,7 @@ import { CircleCheck, ReceiptText, WandSparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export default function CreateRecipe({
   products,
@@ -75,14 +76,20 @@ export default function CreateRecipe({
       recipe_items: selectedRawMaterials,
       current_recipe_default_id: recipeDefault?.id,
     };
-    const res = await createRecipe(recipe);
-    if (!res?.success) {
-      console.log(res?.errors);
-    } else {
+    const result = await createRecipe(recipe);
+    if (result.success) {
+      toast.success(result.message);
       router.push("/main/resep");
       setSelectedProduct(null);
       setSelectedRawMaterials([]);
       setRecipeName("");
+    } else {
+      toast.error(result.errors, {
+        action: {
+          label: "Retry",
+          onClick: () => onSubmitRecipe(),
+        },
+      });
     }
   }
 

@@ -30,13 +30,10 @@ export default function CreateRawMaterial() {
   const onSubmit = async (data: RawMaterialFormData) => {
     const result = await createRawMaterial(data);
     if (result.success) {
-      toast.success("Bahan berhasil ditambahkan", {
-        description: "Data bahan baku tersimpan.",
-      });
+      toast.success(result.message);
       router.push("/main/bahan");
     } else {
-      toast.error("Gagal menyimpan bahan", {
-        description: result.message ?? "Terjadi kesalahan, coba lagi.",
+      toast.error(result.errors, {
         action: {
           label: "Retry",
           onClick: () => onSubmit(data),
